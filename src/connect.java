@@ -1,4 +1,3 @@
-
 import org.mindrot.jbcrypt.BCrypt;
 import javax.swing.*;
 import java.sql.*;
@@ -78,18 +77,47 @@ public class connect {
         }
     }
 
-    // Method to add a new column to the Users table (if needed)
-    public static void addColumn(String columnName, String dataType) {
-        String query = "ALTER TABLE Users ADD COLUMN " + columnName + " " + dataType;
+    // Method to add the recipe to the Recipes table along with its tag associations
+    public static void addRecipeToDatabase(String recipeName, String ingredients, String instructions, ArrayList<String> validTags, int user_id) {
+        String query = "INSERT INTO Recipes (name, ingredients, instructions, user_id) VALUES (?, ?, ?, ?)";
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-             Statement stmt = connection.createStatement()) {
+             PreparedStatement pstmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.executeUpdate(query);
-            System.out.println("Column '" + columnName + "' added successfully.");
+            pstmt.setString(1, recipeName);
+            pstmt.setString(2, ingredients);
+            pstmt.setString(3, instructions);
+            pstmt.setInt(4, user_id);  // For now, using a static user_id (modify for actual logged-in user)
+            int affectedRows = pstmt.executeUpdate();
+
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int recipeId = generatedKeys.getInt(1);
+                        // For each valid tag, add an entry in the Recipe_Tags junction table
+                        for (String tag : validTags) {
+                            addRecipeTag(recipeId, tag);
+                        }
+                    }
+                }
+            }
         } catch (SQLException e) {
-            System.out.println("SQL Error: " + e.getMessage());
+            System.out.println("SQL Error (addRecipeToDatabase): " + e.getMessage());
         }
     }
+
+    // Method to add an association between a recipe and a tag into the Recipe_Tags table
+    public static void addRecipeTag(int recipeId, String tag) {
+        String query = "INSERT INTO Recipe_Tags (recipe_id, tag_id) SELECT ?, tag_id FROM Tags WHERE tag_name = ?";
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setInt(1, recipeId);
+            pstmt.setString(2, tag);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("SQL Error (addRecipeTag): " + e.getMessage());
+        }
+    }
+
 }
 
 // User class to represent logged-in user

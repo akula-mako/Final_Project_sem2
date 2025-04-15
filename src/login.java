@@ -35,7 +35,7 @@ public class login extends JFrame {
                     JOptionPane.showMessageDialog(null, "Successfully logged in as " + user.getName(), "Login Success", JOptionPane.INFORMATION_MESSAGE);
 
                     // Open the Welcome window (or the main app window)
-                   //TO ADD A METHOD TO LAUNCH THE PROGRAM ITSELF
+                    new addRecipe(Integer.parseInt(user.getUserId()));
                     setVisible(false);  // Close the login window
                 } else {
                     // If login failed, show an error message
