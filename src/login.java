@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,11 +14,11 @@ public class login extends JFrame {
     private JLabel LogIn;
     private JLabel registerLabel;
 
-
     public login() {
         setSize(500, 500);  // Set the window size
         setContentPane(panel);  // Set the content panel from the form
         setVisible(true);  // Make the login window visible
+
 
         // ActionListener for the "Log In" button
         loginButton.addActionListener(new ActionListener() {
@@ -35,7 +36,7 @@ public class login extends JFrame {
                     JOptionPane.showMessageDialog(null, "Successfully logged in as " + user.getName(), "Login Success", JOptionPane.INFORMATION_MESSAGE);
 
                     // Open the Welcome window (or the main app window)
-                    new addRecipe(Integer.parseInt(user.getUserId()));
+                    new Home(Integer.parseInt(user.getUserId()));
                     setVisible(false);  // Close the login window
                 } else {
                     // If login failed, show an error message

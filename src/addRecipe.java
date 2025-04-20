@@ -92,7 +92,11 @@ public class addRecipe extends JFrame {
         // Navigation button placeholders (to be implemented later)
         recipeButton.addActionListener(e -> { /* open another window here */ });
         aboutButton.addActionListener(e -> { /* open another window here */ });
-        homeButton.addActionListener(e -> { /* open another window here */ });
+        homeButton.addActionListener(e -> {
+            setVisible(false);
+            new Home(user_id);
+        });
+
     }
 
     // Method to check if a tag exists in the Tags table
