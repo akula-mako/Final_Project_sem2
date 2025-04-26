@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.*;
 
 public class register extends JFrame {
     private JTextField textField1;    // Email input field
@@ -9,7 +10,7 @@ public class register extends JFrame {
     private JButton registerButton;   // Register button
     private JButton logInButton;      // Back to login button
     private JPanel panel; // Main panel to hold components
-    private JLabel icon;
+    private JLabel iconLabel;
     private JLabel emailLabel;
     private JLabel passLabel;
     private JLabel goBack;
@@ -20,7 +21,14 @@ public class register extends JFrame {
         setSize(500, 500);  // Set the window size
         setContentPane(panel);  // Set the content panel from the form
         setVisible(true);  // Make the register window visible
+        // Load the image
+        ImageIcon icon = new ImageIcon(getClass().getResource("/logo.png"));
 
+        // Scale the image
+        Image scaledImage = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+
+        // Set the scaled image as an ImageIcon for the label
+        iconLabel.setIcon(new ImageIcon(scaledImage));
         // ActionListener for the "Register" button
         registerButton.addActionListener(new ActionListener() {
             @Override

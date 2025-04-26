@@ -1,6 +1,6 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class login extends JFrame {
@@ -9,7 +9,7 @@ public class login extends JFrame {
     private JButton loginButton;    // Login button
     private JButton registerButton; // Register button
     private JPanel panel;           // Main panel to hold components
-    private JLabel icon;            // Icon label
+    private JLabel iconLabel;            // Icon label
     private JLabel WelcomeBack;
     private JLabel LogIn;
     private JLabel registerLabel;
@@ -18,7 +18,14 @@ public class login extends JFrame {
         setSize(500, 500);  // Set the window size
         setContentPane(panel);  // Set the content panel from the form
         setVisible(true);  // Make the login window visible
+        // Load the image
+        ImageIcon icon = new ImageIcon(getClass().getResource("/logo.png"));
 
+        // Scale the image
+        Image scaledImage = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+
+        // Set the scaled image as an ImageIcon for the label
+        iconLabel.setIcon(new ImageIcon(scaledImage));
 
         // ActionListener for the "Log In" button
         loginButton.addActionListener(new ActionListener() {

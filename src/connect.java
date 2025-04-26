@@ -32,6 +32,44 @@ public class connect {
         }
         return results;
     }
+    // Method to get the ImageIcon for a recipe
+    public static ImageIcon getImageIcon(String iconPath) {
+        try {
+            return new ImageIcon(iconPath);
+        } catch (Exception e) {
+            System.out.println("Error loading image: " + e.getMessage());
+        }
+        return null;
+    }
+
+    // Method to update the recipe in the database
+    public static void updateRecipe(int recipeID, String updatedIngredients, String updatedInstructions) {
+        String query = "UPDATE Recipes SET ingredients = ?, instructions = ? WHERE recipe_id = ?";
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = connection.prepareStatement(query)) {
+
+            pstmt.setString(1, updatedIngredients);
+            pstmt.setString(2, updatedInstructions);
+            pstmt.setInt(3, recipeID);
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("SQL Error (updateRecipe): " + e.getMessage());
+        }
+    }
+
+    // Method to delete the recipe from the database
+    public static void deleteRecipe(int recipeID) {
+        String query = "DELETE FROM Recipes WHERE recipe_id = ?";
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = connection.prepareStatement(query)) {
+
+            pstmt.setInt(1, recipeID);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("SQL Error (deleteRecipe): " + e.getMessage());
+        }
+    }
 
     // Method for user login
     public static User login(String email, String password) {

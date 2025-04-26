@@ -93,7 +93,8 @@ public class Home extends JFrame {
                 "FROM Recipes r JOIN Users u ON r.user_id = u.user_id";
 
         // If there's a search query, apply it to the SQL
-        if (!query.isEmpty()) {
+        boolean hasSearchQuery = !query.isEmpty();
+        if (hasSearchQuery) {
             sql += " WHERE r.name LIKE ? OR EXISTS (SELECT 1 FROM Recipe_Tags rt " +
                     "JOIN Tags t ON rt.tag_id = t.tag_id WHERE rt.recipe_id = r.recipe_id AND t.tag_name LIKE ?)";
         }
@@ -103,8 +104,12 @@ public class Home extends JFrame {
             sql += " ORDER BY r.name " + sortOrder[0];
         }
 
-        // Execute query and get results
-        recipes = executeQuery(sql, "%" + query + "%", "%" + query + "%");
+        // Now, execute the query with parameters (only if the search query is provided)
+        if (hasSearchQuery) {
+            recipes = executeQuery(sql, "%" + query + "%", "%" + query + "%");
+        } else {
+            recipes = executeQuery(sql);  // No parameters needed if there's no search query
+        }
 
         // Populate the table with fetched data
         updateTable();
@@ -116,7 +121,7 @@ public class Home extends JFrame {
         try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/RecipeManagement", "root", "password");
              PreparedStatement pstmt = connection.prepareStatement(query)) {
 
-            // Set parameters for the query
+            // Set parameters for the query if any are provided
             for (int i = 0; i < params.length; i++) {
                 pstmt.setString(i + 1, params[i]);
             }
@@ -150,7 +155,7 @@ public class Home extends JFrame {
 
     // Method to open the addRecipe window when double-clicking a recipe
     private void openRecipeWindow(int recipeId, int user_id) {
-        new addRecipe(user_id); // This will pass the recipe ID to the addRecipe window
+        new openRecipe(recipeId, user_id); // This will pass the recipe ID to the addRecipe window
     }
 
     public static void main(String[] args) {
