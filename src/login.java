@@ -1,7 +1,7 @@
 import javax.swing.*;
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
+import java.util.regex.*;
 
 public class login extends JFrame {
     private JTextField textField1;  // Email input field
@@ -9,7 +9,7 @@ public class login extends JFrame {
     private JButton loginButton;    // Login button
     private JButton registerButton; // Register button
     private JPanel panel;           // Main panel to hold components
-    private JLabel iconLabel;            // Icon label
+    private JLabel iconLabel;       // Icon label
     private JLabel WelcomeBack;
     private JLabel LogIn;
     private JLabel registerLabel;
@@ -26,6 +26,9 @@ public class login extends JFrame {
 
         // Set the scaled image as an ImageIcon for the label
         iconLabel.setIcon(new ImageIcon(scaledImage));
+
+        // Initially disable the login button
+        loginButton.setEnabled(false);
 
         // ActionListener for the "Log In" button
         loginButton.addActionListener(new ActionListener() {
@@ -62,5 +65,40 @@ public class login extends JFrame {
                 setVisible(false);  // Close the login window
             }
         });
+
+        // FocusListener to validate email format and block leaving the field until valid email
+        textField1.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                String email = textField1.getText();
+                if (!isValidEmail(email)) {
+                    JOptionPane.showMessageDialog(null, "Invalid email format. Please enter a valid email.", "Email Error", JOptionPane.ERROR_MESSAGE);
+                    loginButton.setEnabled(false);  // Disable login button if email is invalid
+                } else {
+                    loginButton.setEnabled(true);  // Enable login button if email is valid
+                }
+            }
+        });
+
+        // Add a KeyListener to enable/disable the login button as the user types in the email field
+        textField1.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                String email = textField1.getText();
+                if (isValidEmail(email)) {
+                    loginButton.setEnabled(true);  // Enable login button if email is valid
+                } else {
+                    loginButton.setEnabled(false);  // Disable login button if email is invalid
+                }
+            }
+        });
+    }
+
+    // Method to validate email using regex
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 }

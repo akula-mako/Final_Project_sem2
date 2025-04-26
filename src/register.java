@@ -1,7 +1,7 @@
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.awt.*;
+import java.util.regex.*;
 
 public class register extends JFrame {
     private JTextField textField1;    // Email input field
@@ -9,13 +9,12 @@ public class register extends JFrame {
     private JTextField textField3;    // Name input field
     private JButton registerButton;   // Register button
     private JButton logInButton;      // Back to login button
-    private JPanel panel; // Main panel to hold components
+    private JPanel panel;             // Main panel to hold components
     private JLabel iconLabel;
     private JLabel emailLabel;
     private JLabel passLabel;
     private JLabel goBack;
     private JLabel nameLabel;
-
 
     public register() {
         setSize(500, 500);  // Set the window size
@@ -29,6 +28,7 @@ public class register extends JFrame {
 
         // Set the scaled image as an ImageIcon for the label
         iconLabel.setIcon(new ImageIcon(scaledImage));
+
         // ActionListener for the "Register" button
         registerButton.addActionListener(new ActionListener() {
             @Override
@@ -68,5 +68,25 @@ public class register extends JFrame {
                 setVisible(false);  // Close the register window
             }
         });
+
+        // FocusListener to validate email format and block leaving the field until valid email
+        textField1.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                String email = textField1.getText();
+                if (!isValidEmail(email)) {
+                    JOptionPane.showMessageDialog(null, "Invalid email format. Please enter a valid email.", "Email Error", JOptionPane.ERROR_MESSAGE);
+                    textField1.requestFocusInWindow();  // Prevent focus from leaving the email field
+                }
+            }
+        });
+    }
+
+    // Method to validate email using regex
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 }

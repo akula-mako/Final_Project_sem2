@@ -56,6 +56,7 @@ public class Home extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new addRecipe(userId); // Open addRecipe form with userId
+                setVisible(false);
             }
         });
 

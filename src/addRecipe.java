@@ -64,6 +64,9 @@ public class addRecipe extends JFrame {
                 for (String imagePath : imagePaths) {
                     addImageToDatabase(imagePath, user_id);
                 }
+                JOptionPane.showMessageDialog(null, "Recipe added successfully!", "Recipe information", JOptionPane.INFORMATION_MESSAGE);
+                setVisible(false);
+                new Home(user_id);
             }
         });
 

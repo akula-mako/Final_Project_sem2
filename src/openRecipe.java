@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
+import java.awt.*;
 
 public class openRecipe extends JFrame {
     private JLabel nameLabel;
@@ -54,7 +55,7 @@ public class openRecipe extends JFrame {
     private JPanel panel;
 
     public openRecipe(int recipeID, int currentUserID) {
-        setSize(600, 400);
+        setSize(600, 600);
         setContentPane(panel);
         setVisible(true);
 
@@ -129,7 +130,8 @@ public class openRecipe extends JFrame {
     // Method to set the recipe icon
     private void setRecipeIcon(String iconPath) {
         ImageIcon icon = connect.getImageIcon(iconPath);
-        iconLabel.setIcon(icon);
+        Image scaledImage = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        iconLabel.setIcon(new ImageIcon(scaledImage));
     }
 
     // Method to check if the current user is the creator of the recipe
