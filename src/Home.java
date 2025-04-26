@@ -31,7 +31,7 @@ public class Home extends JFrame {
         resultsTable.setDefaultEditor(Object.class, null);
 
         // Load initial data (display results)
-        loadTableData("");
+        loadTableData(""); // Initial call to load data without sorting
 
         // Search button action
         searchButton.addActionListener(new ActionListener() {
@@ -46,8 +46,8 @@ public class Home extends JFrame {
         sortCombo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String sortOrder = sortCombo.getSelectedIndex() == 0 ? "ASC" : "DESC";
-                loadTableData("", sortOrder); // Load sorted data
+                String sortOrder = getSortOrderBasedOnSelection(sortCombo.getSelectedIndex());
+                loadTableData("", sortOrder); // Load sorted data based on the selected option
             }
         });
 
@@ -81,7 +81,6 @@ public class Home extends JFrame {
                 }
             }
         });
-
     }
 
     // Method to load data into the table
@@ -102,18 +101,19 @@ public class Home extends JFrame {
 
         // Add sorting logic if needed
         if (sortOrder.length > 0) {
-            sql += " ORDER BY r.name " + sortOrder[0];
+            sql += " " + sortOrder[0];  // Dynamically apply the sort order (A-Z or Z-A)
         }
 
         // Now, execute the query with parameters (only if the search query is provided)
+        ArrayList<String[]> recipesList;
         if (hasSearchQuery) {
-            recipes = executeQuery(sql, "%" + query + "%", "%" + query + "%");
+            recipesList = executeQuery(sql, "%" + query + "%", "%" + query + "%");
         } else {
-            recipes = executeQuery(sql);  // No parameters needed if there's no search query
+            recipesList = executeQuery(sql);  // No parameters needed if there's no search query
         }
 
         // Populate the table with fetched data
-        updateTable();
+        updateTable(recipesList);
     }
 
     // Helper method to execute parameterized queries
@@ -148,9 +148,24 @@ public class Home extends JFrame {
     }
 
     // Method to update the table with new data
-    private void updateTable() {
-        for (String[] recipe : recipes) {
+    private void updateTable(ArrayList<String[]> recipesList) {
+        // Clear existing rows first
+        model.setRowCount(0);
+
+        // Populate the table with new data
+        for (String[] recipe : recipesList) {
             model.addRow(new Object[]{recipe[0], recipe[1], recipe[2], recipe[3]});
+        }
+    }
+
+    // Method to get the sort order based on the ComboBox selection
+    private String getSortOrderBasedOnSelection(int selectedIndex) {
+        switch (selectedIndex) {
+            case 0: return "ORDER BY r.name ASC";  // Recipe Name A-Z
+            case 1: return "ORDER BY r.name DESC"; // Recipe Name Z-A
+            case 2: return "ORDER BY r.created_at ASC"; // Date Created A-Z
+            case 3: return "ORDER BY r.created_at DESC"; // Date Created Z-A
+            default: return "";
         }
     }
 

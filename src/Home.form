@@ -51,8 +51,10 @@
         </constraints>
         <properties>
           <model>
-            <item value="A → Z"/>
-            <item value="Z → A"/>
+            <item value="Recipe Name A → Z"/>
+            <item value="Recipe Name Z → A"/>
+            <item value="Date Created A → Z"/>
+            <item value="Date Created Z → A"/>
           </model>
         </properties>
       </component>
