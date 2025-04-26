@@ -18,6 +18,7 @@ public class login extends JFrame {
         setSize(500, 500);  // Set the window size
         setContentPane(panel);  // Set the content panel from the form
         setVisible(true);  // Make the login window visible
+        panel.setBackground(new Color(228, 213, 180));
         // Load the image
         ImageIcon icon = new ImageIcon(getClass().getResource("/logo.png"));
 

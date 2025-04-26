@@ -58,7 +58,7 @@ public class openRecipe extends JFrame {
         setSize(600, 600);
         setContentPane(panel);
         setVisible(true);
-
+        panel.setBackground(new Color(228, 213, 180));
         // Initially set text areas as non-editable
         ingredientsArea.setEditable(false);
         instructionsArea.setEditable(false);

@@ -22,7 +22,7 @@ public class Home extends JFrame {
         setSize(800, 600);
         setContentPane(panel);
         setVisible(true);
-
+        panel.setBackground(new Color(228, 213, 180));
         model = new DefaultTableModel();
         model.setColumnIdentifiers(new Object[]{"Recipe ID", "Recipe Name", "Creator", "Created on:"});
         resultsTable.setModel(model);

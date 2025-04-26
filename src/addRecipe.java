@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -12,23 +13,24 @@ public class addRecipe extends JFrame {
     private JTextArea tagsTextArea;             // Tags input field (multiple tags entered together)
     private JButton addPhotosButton;            // Button to add photos (opens a file chooser)
     private JButton addRecipeButton;            // Button to add the recipe to the database
-    private JButton recipeButton;               // Placeholder navigation button (open recipe window)
-    private JButton aboutButton;                // Placeholder navigation button (open about window)
+    private JButton logInButton;               // Placeholder navigation button (open recipe window)
+    private JButton registerButton;                // Placeholder navigation button (open about window)
     private JButton homeButton;                 // Placeholder navigation button (open home window)
-    private JLabel recipeLabel;
+    private JLabel label;
     private JLabel recipeNameLabel;
     private JLabel iconLabel;
     private JLabel ingredientsLabel;
     private JLabel instructionsLabel;
     private JLabel tagsLabel;
     private JPanel panel;                     // Main panel
+    private JLabel recipeLabel;
     private ArrayList<String> imagePaths;      // List to hold image file paths
 
     public addRecipe(int user_id) {
         setSize(600, 400);
         setContentPane(panel);
         setVisible(true);
-
+        panel.setBackground(new Color(228, 213, 180));
         imagePaths = new ArrayList<>(); // Initialize imagePaths list
 
         // ActionListener for the "Add Recipe" button
@@ -93,8 +95,10 @@ public class addRecipe extends JFrame {
         });
 
         // Navigation button placeholders (to be implemented later)
-        recipeButton.addActionListener(e -> { /* open another window here */ });
-        aboutButton.addActionListener(e -> { /* open another window here */ });
+        logInButton.addActionListener(e -> { setVisible(false);
+            new login(); });
+        registerButton.addActionListener(e -> { setVisible(false);
+            new register(); });
         homeButton.addActionListener(e -> {
             setVisible(false);
             new Home(user_id);
