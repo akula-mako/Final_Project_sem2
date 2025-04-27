@@ -1,0 +1,83 @@
+-- Create the database
+CREATE DATABASE RecipeManagement;
+
+-- Use the newly created database
+USE RecipeManagement;
+
+-- Create the Users table
+CREATE TABLE Users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create the Recipes table
+CREATE TABLE Recipes (
+    recipe_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    name VARCHAR(255) NOT NULL,
+    category VARCHAR(50),
+    image_url VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);
+
+-- Create the Ingredients table
+CREATE TABLE Ingredients (
+    ingredient_id INT AUTO_INCREMENT PRIMARY KEY,
+    recipe_id INT,
+    ingredient_name VARCHAR(255) NOT NULL,
+    quantity VARCHAR(100),
+    FOREIGN KEY (recipe_id) REFERENCES Recipes(recipe_id) ON DELETE CASCADE
+);
+
+-- Create the Tags table
+CREATE TABLE Tags (
+    tag_id INT AUTO_INCREMENT PRIMARY KEY,
+    tag_name VARCHAR(50) NOT NULL
+);
+
+-- Create the junction table for the many-to-many relationship between Recipes and Tags
+CREATE TABLE Recipe_Tags (
+    recipe_id INT,
+    tag_id INT,
+    PRIMARY KEY (recipe_id, tag_id),
+    FOREIGN KEY (recipe_id) REFERENCES Recipes(recipe_id) ON DELETE CASCADE,
+    FOREIGN KEY (tag_id) REFERENCES Tags(tag_id) ON DELETE CASCADE
+);
+
+USE RecipeManagement;
+
+-- 1. Add ingredients column to Recipes table
+ALTER TABLE Recipes
+    ADD COLUMN ingredients TEXT;
+
+-- 2. Drop the Ingredients table
+DROP TABLE Ingredients;
+
+-- 3. Create the Images table
+CREATE TABLE Images (
+                        image_id INT AUTO_INCREMENT PRIMARY KEY,
+                        recipe_id INT NOT NULL,
+                        image_url VARCHAR(255) NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        FOREIGN KEY (recipe_id) REFERENCES Recipes(recipe_id) ON DELETE CASCADE
+);
+ALTER TABLE Recipes
+    DROP COLUMN category;
+
+ALTER TABLE Recipes
+    ADD COLUMN instructions TEXT;
+
+ALTER TABLE Recipes
+    DROP COLUMN image_url;
+
+select * from Recipes;
+
+select * from Images;
+
+select * from Tags;
+
+select * from Users;
