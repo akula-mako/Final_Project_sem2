@@ -173,8 +173,4 @@ public class Home extends JFrame {
     private void openRecipeWindow(int recipeId, int user_id) {
         new openRecipe(recipeId, user_id); // This will pass the recipe ID to the addRecipe window
     }
-
-    public static void main(String[] args) {
-        new Home(1); // For now, assuming user_id = 1 for testing
-    }
 }

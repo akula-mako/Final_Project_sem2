@@ -116,22 +116,27 @@ public class connect {
     }
 
     // Method to add the recipe to the Recipes table along with its tag associations
-    public static void addRecipeToDatabase(String recipeName, String ingredients, String instructions, ArrayList<String> validTags, int user_id) {
+    public static int addRecipeToDatabase(String recipeName,
+                                          String ingredients,
+                                          String instructions,
+                                          ArrayList<String> validTags,
+                                          int user_id) {
         String query = "INSERT INTO Recipes (name, ingredients, instructions, user_id) VALUES (?, ?, ?, ?)";
+        int recipeId = -1;
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement pstmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setString(1, recipeName);
             pstmt.setString(2, ingredients);
             pstmt.setString(3, instructions);
-            pstmt.setInt(4, user_id);  // For now, using a static user_id (modify for actual logged-in user)
+            pstmt.setInt(4, user_id);
             int affectedRows = pstmt.executeUpdate();
 
             if (affectedRows > 0) {
                 try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
-                        int recipeId = generatedKeys.getInt(1);
-                        // For each valid tag, add an entry in the Recipe_Tags junction table
+                        recipeId = generatedKeys.getInt(1);
+                        // now link tags
                         for (String tag : validTags) {
                             addRecipeTag(recipeId, tag);
                         }
@@ -141,6 +146,7 @@ public class connect {
         } catch (SQLException e) {
             System.out.println("SQL Error (addRecipeToDatabase): " + e.getMessage());
         }
+        return recipeId;
     }
 
     // Method to add an association between a recipe and a tag into the Recipe_Tags table

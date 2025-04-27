@@ -15,17 +15,14 @@ public class login extends JFrame {
     private JLabel registerLabel;
 
     public login() {
-        setSize(500, 500);  // Set the window size
-        setContentPane(panel);  // Set the content panel from the form
-        setVisible(true);  // Make the login window visible
+        setSize(500, 500);                  // Set the window size
+        setContentPane(panel);              // Set the content panel from the form
+        setVisible(true);                   // Make the login window visible
         panel.setBackground(new Color(228, 213, 180));
-        // Load the image
+
+        // Load and set the icon image
         ImageIcon icon = new ImageIcon(getClass().getResource("/logo.png"));
-
-        // Scale the image
         Image scaledImage = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-
-        // Set the scaled image as an ImageIcon for the label
         iconLabel.setIcon(new ImageIcon(scaledImage));
 
         // Initially disable the login button
@@ -35,62 +32,70 @@ public class login extends JFrame {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Get email and password from the text fields
                 String email = textField1.getText();
                 String password = textField2.getText();
 
-                // Call the login method from the connect class to check credentials
                 User user = connect.login(email, password);
 
                 if (user != null) {
-                    // If login is successful, show a success message
-                    JOptionPane.showMessageDialog(null, "Successfully logged in as " + user.getName(), "Login Success", JOptionPane.INFORMATION_MESSAGE);
-
-                    // Open the Welcome window (or the main app window)
+                    JOptionPane.showMessageDialog(
+                            login.this,
+                            "Successfully logged in as " + user.getName(),
+                            "Login Success",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
                     new Home(Integer.parseInt(user.getUserId()));
-                    setVisible(false);  // Close the login window
+                    setVisible(false);
                 } else {
-                    // If login failed, show an error message
-                    JOptionPane.showMessageDialog(null, "Login failed. Invalid credentials.", "Login Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(
+                            login.this,
+                            "Login failed. Invalid credentials.",
+                            "Login Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
                 }
             }
         });
 
-        // ActionListener for the "Register" button (opens register form)
+        // ActionListener for the "Register" button
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Open the register form when the "Register" button is clicked
-                register registerForm = new register();  // Assuming register.java is the form class for registration
-                registerForm.setVisible(true);  // Make the register form visible
-                setVisible(false);  // Close the login window
+                register registerForm = new register();
+                registerForm.setVisible(true);
+                setVisible(false);
             }
         });
 
-        // FocusListener to validate email format and block leaving the field until valid email
+        // FocusListener for email validation, skipping when moving focus to Register button
         textField1.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
+                Component newFocusOwner = e.getOppositeComponent();
+                if (newFocusOwner == registerButton) {
+                    return;
+                }
+
                 String email = textField1.getText();
                 if (!isValidEmail(email)) {
-                    JOptionPane.showMessageDialog(null, "Invalid email format. Please enter a valid email.", "Email Error", JOptionPane.ERROR_MESSAGE);
-                    loginButton.setEnabled(false);  // Disable login button if email is invalid
+                    JOptionPane.showMessageDialog(
+                            login.this,
+                            "Invalid email format. Please enter a valid email.",
+                            "Email Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                    loginButton.setEnabled(false);
                 } else {
-                    loginButton.setEnabled(true);  // Enable login button if email is valid
+                    loginButton.setEnabled(true);
                 }
             }
         });
 
-        // Add a KeyListener to enable/disable the login button as the user types in the email field
+        // KeyListener for enabling/disabling login button on the fly
         textField1.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                String email = textField1.getText();
-                if (isValidEmail(email)) {
-                    loginButton.setEnabled(true);  // Enable login button if email is valid
-                } else {
-                    loginButton.setEnabled(false);  // Disable login button if email is invalid
-                }
+                loginButton.setEnabled(isValidEmail(textField1.getText()));
             }
         });
     }

@@ -37,40 +37,51 @@ public class addRecipe extends JFrame {
         addRecipeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Retrieve input data from the text areas and field
+                // 1) Gather inputs
                 String recipeName = recipeNameField.getText();
                 String ingredients = ingredientsTextArea.getText();
                 String instructions = instructionsTextArea.getText();
                 String tags = tagsTextArea.getText();
 
-                // Process the tags: split by comma and/or space characters
+                // 2) Process tags: split by comma/space, insert new tags as needed
                 String[] tagArray = tags.split("[ ,]+");
                 ArrayList<String> validTags = new ArrayList<>();
-
-                // For each tag, check if it exists; if not, add it into the Tags table
                 for (String tag : tagArray) {
                     tag = tag.trim();
                     if (!tag.isEmpty()) {
-                        boolean tagExists = checkTagInDatabase(tag);
-                        if (!tagExists) {
+                        if (!checkTagInDatabase(tag)) {
                             addTagToDatabase(tag);
                         }
                         validTags.add(tag);
                     }
                 }
 
-                // Call the method in connect.java to add the recipe to the database
-                connect.addRecipeToDatabase(recipeName, ingredients, instructions, validTags, user_id);
+                // 3) Insert recipe and retrieve the generated recipeId
+                int recipeId = connect.addRecipeToDatabase(
+                        recipeName,
+                        ingredients,
+                        instructions,
+                        validTags,
+                        user_id
+                );
 
-                // After recipe is added, upload images to the database
+                // 4) Upload each selected photo under the new recipeId
                 for (String imagePath : imagePaths) {
-                    addImageToDatabase(imagePath, user_id);
+                    addImageToDatabase(imagePath, recipeId);
                 }
-                JOptionPane.showMessageDialog(null, "Recipe added successfully!", "Recipe information", JOptionPane.INFORMATION_MESSAGE);
+
+                // 5) Notify the user and navigate back home
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Recipe added successfully!",
+                        "Recipe information",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
                 setVisible(false);
                 new Home(user_id);
             }
         });
+
 
         // ActionListener for the "Add Photos" button (opens file chooser)
         addPhotosButton.addActionListener(new ActionListener() {
